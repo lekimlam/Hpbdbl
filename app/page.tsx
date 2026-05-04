@@ -285,10 +285,10 @@ export default function BirthdayPage() {
           <div style={{ position: 'relative' }}>
             <div className={`hat ${hatVisible ? 'show' : ''}`} id="hat">🎩</div>
             <div className="photo-circle">
-              <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="" />
+              <img src="/anh10.jpg" alt="" />
             </div>
           </div>
-          <div className="name-tag">Matsumoto Reiyo</div>
+          <div className="name-tag">Bảo Lan</div>
         </div>
       </div>
 
