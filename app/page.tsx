@@ -178,9 +178,10 @@ export default function BirthdayPage() {
   useEffect(() => {
     if (scene === 3 && !s3Ready) {
       setS3Ready(true);
-      setCardMsgVisible(new Array(cardMsg.length).fill(false));
+      const msgArr = Array.from(cardMsg);
+      setCardMsgVisible(new Array(msgArr.length).fill(false));
       
-      for (let i = 0; i < cardMsg.length; i++) {
+      for (let i = 0; i < msgArr.length; i++) {
         setTimeout(() => {
           setCardMsgVisible(prev => {
             const next = [...prev];
@@ -190,7 +191,7 @@ export default function BirthdayPage() {
         }, i * 20);
       }
 
-      setTimeout(() => setBtnStartVisible(true), cardMsg.length * 20 + 300);
+      setTimeout(() => setBtnStartVisible(true), msgArr.length * 20 + 300);
       
       // We can also fire gentle fireworks here, but simplified for React port
     }
@@ -306,7 +307,7 @@ export default function BirthdayPage() {
           <div className="card">
             <h2>Happy Birthday</h2>
             <p className="card-text" id="card-text">
-              {cardMsg.split('').map((c, i) => {
+              {Array.from(cardMsg).map((c, i) => {
                 if (c === '\n') return <br key={i} />;
                 return <span key={i} className={cardMsgVisible[i] ? 'show' : ''}>{c}</span>;
               })}
