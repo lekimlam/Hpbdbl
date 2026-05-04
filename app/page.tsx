@@ -2,9 +2,9 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 
 // --- CÁCH THAY ẢNH Ở ĐÂY ---
-// Tự động sinh ra danh sách 28 ảnh dựa trên tên file từ anh1.jpg đến anh28.jpg
+// Tự động sinh ra danh sách 30 ảnh dựa trên tên file từ anh1.jpg đến anh30.jpg
 // MẸO: Đảm bảo bạn đặt tất cả ảnh này vào trong thư mục "public" nhé!
-const userImages = Array.from({ length: 28 }, (_, i) => `/anh${i + 1}.jpg`);
+const userImages = Array.from({ length: 30 }, (_, i) => `/anh${i + 1}.jpg`);
 
 // Tự động điền đầy ảnh nếu chưa đủ 30 ảnh cho quả cầu tròn trịa (lặp lại ảnh cũ)
 const imgSrcs = [...userImages];
