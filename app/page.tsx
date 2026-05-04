@@ -25,39 +25,22 @@ export default function BirthdayPage() {
   const [scene, setScene] = useState<number>(0);
   const cvsRef = useRef<HTMLCanvasElement>(null);
 
-  // --- S0 State (Countdown + Password) ---
-  const [timeLeft, setTimeLeft] = useState({ d: 0, h: 0, m: 0, s: 0, total: 1 });
-  const [isTimeUp, setIsTimeUp] = useState(true); // Tạm thời để true để bỏ qua đếm ngược
+  // --- S0 State (Password & Countdown) ---
   const [passInput, setPassInput] = useState('');
   const [passShake, setPassShake] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(5);
+  const [isTimeUp, setIsTimeUp] = useState(false);
 
   useEffect(() => {
-    // Ngày đích: 5/5/2026 00:00:00
-    const targetDate = new Date(2026, 4, 5, 0, 0, 0).getTime();
-    
-    // Tạm thời comment timer để test phần sau
-    /*
-    const timer = setInterval(() => {
-      const now = new Date().getTime();
-      const diff = targetDate - now;
-
-      if (diff <= 0) {
-        setIsTimeUp(true);
-        clearInterval(timer);
-      } else {
-        setTimeLeft({
-          d: Math.floor(diff / (1000 * 60 * 60 * 24)),
-          h: Math.floor((diff / (1000 * 60 * 60)) % 24),
-          m: Math.floor((diff / 1000 / 60) % 60),
-          s: Math.floor((diff / 1000) % 60),
-          total: diff
-        });
-      }
+    if (timeLeft <= 0) {
+      setIsTimeUp(true);
+      return;
+    }
+    const timer = setTimeout(() => {
+      setTimeLeft(prev => prev - 1);
     }, 1000);
-
-    return () => clearInterval(timer);
-    */
-  }, []);
+    return () => clearTimeout(timer);
+  }, [timeLeft]);
 
   const handlePassSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -297,17 +280,12 @@ export default function BirthdayPage() {
     <>
       <canvas ref={cvsRef} id="bg" />
 
-      {/* S0: Countdown & Password */}
+      {/* S0: Password & Countdown */}
       <div id="s0" className={`scene ${scene === 0 ? 'active' : ''}`}>
         {!isTimeUp ? (
           <div className="countdown-container">
-            <h2 className="cd-title">Sắp đến ngày rồi nè... ⏳💖</h2>
-            <div className="cd-boxes">
-              <div className="cd-box"><div className="cd-num">{timeLeft.d}</div><div className="cd-label">Ngày</div></div>
-              <div className="cd-box"><div className="cd-num">{timeLeft.h}</div><div className="cd-label">Giờ</div></div>
-              <div className="cd-box"><div className="cd-num">{timeLeft.m}</div><div className="cd-label">Phút</div></div>
-              <div className="cd-box"><div className="cd-num">{timeLeft.s}</div><div className="cd-label">Giây</div></div>
-            </div>
+            <h2 className="cd-title">Chuẩn bị nha... ⏳💖</h2>
+            <div className="cd-big-num" key={timeLeft}>{timeLeft}</div>
             <div className="floating-hearts">
               <span className="fh">💖</span>
               <span className="fh">✨</span>
@@ -350,7 +328,7 @@ export default function BirthdayPage() {
         >
           🎁
         </span>
-        <p>Đây là món quà tặng bạn</p>
+        <p>Đây là món quà tặng em</p>
       </div>
 
       {/* S2 */}
@@ -362,7 +340,7 @@ export default function BirthdayPage() {
           <div className="hb-line" id="hb-bday">
             {"Birthday".split('').map((c, i) => <span key={i} className={s2Words.bday ? 'show' : ''}>{c}</span>)}
           </div>
-          <div className="date-pill">29-02</div>
+          <div className="date-pill">05.05.2011</div>
           <div className="rabbit">🐰</div>
           <button 
             className="btn-letter" 
@@ -379,7 +357,7 @@ export default function BirthdayPage() {
           <div style={{ position: 'relative' }}>
             <div className={`hat ${hatVisible ? 'show' : ''}`} id="hat">🎩</div>
             <div className="photo-circle">
-              <img src="/anh10.jpg" alt="" />
+              <img src="/anh1.jpg" alt="" />
             </div>
           </div>
           <div className="name-tag">Bảo Lan</div>

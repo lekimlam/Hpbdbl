@@ -7,22 +7,21 @@ canvas#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 .scene{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .6s;z-index:10}
 .scene.active{opacity:1;pointer-events:all}
 
-/* ===== S0 Countdown & Password ===== */
+/* ===== S0 Password & Countdown ===== */
 .countdown-container { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 30px; animation: s1Enter 1s ease forwards; }
 .cd-title { font-family: 'Fredoka One', cursive; font-size: 2rem; text-shadow: 0 0 15px rgba(255,105,180,0.6); color: #ffa3d7; }
-.cd-boxes { display: flex; gap: 15px; }
-.cd-box { background: rgba(255, 105, 180, 0.2); border: 2px solid rgba(255, 105, 180, 0.4); padding: 15px; border-radius: 12px; width: 80px; backdrop-filter: blur(5px); box-shadow: 0 0 15px rgba(255, 105, 180, 0.2); }
-.cd-num { font-size: 2.2rem; font-weight: 800; font-family: 'Fredoka One', cursive; color: #fff; line-height: 1; }
-.cd-label { font-size: 0.9rem; margin-top: 5px; color: #ffb8e0; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.cd-big-num { font-size: 6rem; font-weight: 800; font-family: 'Fredoka One', cursive; color: #fff; text-shadow: 0 0 30px rgba(255,105,180,0.8); animation: popIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+@keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 50% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
 
-.password-container { text-align: center; animation: s1Enter 0.8s ease forwards; background: rgba(255, 255, 255, 0.05); padding: 40px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
-.pass-title { font-family: 'Fredoka One', cursive; font-size: 2.2rem; color: #fff; text-shadow: 0 0 15px rgba(0, 220, 255, 0.6); margin-bottom: 10px; }
-.pass-subtitle { font-size: 1.1rem; color: #aaa; margin-bottom: 25px; }
-.pass-form { display: flex; flex-direction: column; gap: 15px; align-items: center; }
-.pass-input { background: rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.3); color: #fff; padding: 12px 20px; border-radius: 25px; font-size: 1.2rem; width: 250px; text-align: center; outline: none; transition: border-color 0.3s, box-shadow 0.3s; }
-.pass-input:focus { border-color: #00e5ff; box-shadow: 0 0 15px rgba(0, 229, 255, 0.4); }
-.pass-btn { background: linear-gradient(135deg, #00e5ff, #1a5fff); color: #fff; border: none; padding: 12px 30px; border-radius: 25px; font-weight: 800; font-size: 1.1rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; white-space: nowrap; }
-.pass-btn:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 5px 20px rgba(0, 229, 255, 0.5); }
+.password-container { text-align: center; animation: s1Enter 0.8s ease forwards; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-width: 400px; }
+.pass-title { font-size: 2rem; color: #fff; text-shadow: 0 0 20px rgba(236, 72, 153, 0.8); margin-bottom: 8px; letter-spacing: 2px; }
+.pass-subtitle { font-size: 1.1rem; color: rgba(255,255,255,0.8); margin-bottom: 30px; letter-spacing: 1px; }
+.pass-form { display: flex; flex-direction: column; gap: 20px; align-items: center; width: 100%; }
+.pass-input { background: transparent; border: none; border-bottom: 2px solid rgba(255,255,255,0.4); color: #fff; padding: 10px 15px; font-size: 1.4rem; width: 80%; text-align: center; outline: none; transition: all 0.3s; letter-spacing: 2px; }
+.pass-input:focus { border-bottom-color: #ec4899; text-shadow: 0 0 10px rgba(236, 72, 153, 0.5); }
+.pass-input::placeholder { color: rgba(255,255,255,0.3); font-size: 1.1rem; letter-spacing: 1px; }
+.pass-btn { background: transparent; color: #fff; border: 2px solid #ec4899; padding: 12px 36px; border-radius: 30px; font-size: 1.1rem; letter-spacing: 2px; cursor: pointer; transition: all 0.3s; margin-top: 10px; box-shadow: 0 0 15px rgba(236, 72, 153, 0.2); }
+.pass-btn:hover { background: #ec4899; box-shadow: 0 0 25px rgba(236, 72, 153, 0.6); transform: translateY(-2px); }
 
 .floating-hearts { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: -1; }
 .fh { position: absolute; font-size: 2rem; opacity: 0; animation: floatUp 4s ease-in-out infinite; }
@@ -42,9 +41,9 @@ canvas#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 
 /* ===== S2 ===== */
 #s2{flex-direction:row;align-items:center;justify-content:center;padding:20px;gap:0}
-.s2-left{flex:1;display:flex;flex-direction:column;align-items:flex-start;padding-left:40px;gap:10px;position:relative}
+.s2-left{flex:1;display:flex;flex-direction:column;align-items:flex-start;padding-left:40px;gap:10px;position:relative;max-width:550px}
 .s2-right{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;padding-top:40px}
-.hb-line{font-family:'Fredoka One',cursive;font-size:5rem;line-height:1.05}
+.hb-line{font-family:'Fredoka One',cursive;font-size:clamp(3rem, 7vw, 5rem);line-height:1.05;white-space:nowrap}
 .hb-line span{display:inline-block;opacity:0;transform:translateY(18px);transition:opacity .3s,transform .3s}
 .hb-line span.show{opacity:1;transform:none}
 #hb-happy .show{color:#fff;text-shadow:0 0 18px rgba(0,200,255,.7),3px 3px 0 #1a5fff}
