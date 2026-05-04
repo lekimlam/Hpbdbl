@@ -141,3 +141,15 @@ canvas#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 .emoji-row button:hover{transform:scale(1.35)}
 .float-emoji{position:fixed;pointer-events:none;z-index:2000;animation:floatUp 1.4s ease-out forwards;font-size:22px}
 @keyframes floatUp{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-130px) scale(1.5);opacity:0}}
+
+/* ===== Mobile Responsive ===== */
+@media (max-width: 768px) {
+  #s2 { flex-direction: column-reverse; padding: 10px;text-align: center; }
+  .s2-left { padding-left: 0; align-items: center; margin-top: 10px; }
+  .s2-right { padding-top: 10px; padding-bottom: 20px;}
+  .hb-line { font-size: 3.5rem; }
+  .photo-circle { width: 160px; height: 160px; }
+  .hat { top: -45px; font-size: 2.4rem; }
+  .balloons { top: 0px; position: relative; justify-content: center;}
+  #s1 .gift { font-size: 4rem; }
+}

@@ -268,7 +268,7 @@ export default function BirthdayPage() {
           <div className="hb-line" id="hb-bday">
             {"Birthday".split('').map((c, i) => <span key={i} className={s2Words.bday ? 'show' : ''}>{c}</span>)}
           </div>
-          <div className="date-pill">29-02</div>
+          <div className="date-pill">05-05</div>
           <div className="rabbit">🐰</div>
           <button 
             className="btn-letter" 
