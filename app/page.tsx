@@ -328,7 +328,7 @@ export default function BirthdayPage() {
         >
           🎁
         </span>
-        <p>Đây là món quà tặng em</p>
+        <p>Đây là món quà tặng bạn</p>
       </div>
 
       {/* S2 */}
@@ -357,7 +357,7 @@ export default function BirthdayPage() {
           <div style={{ position: 'relative' }}>
             <div className={`hat ${hatVisible ? 'show' : ''}`} id="hat">🎩</div>
             <div className="photo-circle">
-              <img src="/anh1.jpg" alt="" />
+              <img src="/anh10.jpg" alt="" />
             </div>
           </div>
           <div className="name-tag">Bảo Lan</div>
