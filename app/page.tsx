@@ -1,17 +1,24 @@
 'use client';
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 
-// Replace these URLs with real photos!
-const imgSrcs = Array.from({ length: 48 }, (_, i) => `https://picsum.photos/400/600?random=${i + 30}`);
+// --- CÁCH THAY ẢNH Ở ĐÂY ---
+// Tự động sinh ra danh sách 28 ảnh dựa trên tên file từ anh1.jpg đến anh28.jpg
+// MẸO: Đảm bảo bạn đặt tất cả ảnh này vào trong thư mục "public" nhé!
+const userImages = Array.from({ length: 28 }, (_, i) => `/anh${i + 1}.jpg`);
+
+// Tự động điền đầy ảnh nếu chưa đủ 30 ảnh cho quả cầu tròn trịa (lặp lại ảnh cũ)
+const imgSrcs = [...userImages];
+while (imgSrcs.length < 30) {
+  imgSrcs.push(userImages[imgSrcs.length % userImages.length]);
+}
 
 const RINGS = [
   { lat: 80, count: 1, w: 85, h: 100 },
-  { lat: 55, count: 5, w: 105, h: 125 },
-  { lat: 25, count: 8, w: 118, h: 140 },
-  { lat: -5, count: 9, w: 122, h: 144 },
-  { lat: -35, count: 8, w: 118, h: 140 },
-  { lat: -62, count: 5, w: 105, h: 125 },
-  { lat: -85, count: 1, w: 85, h: 100 },
+  { lat: 50, count: 5, w: 105, h: 125 },
+  { lat: 15, count: 9, w: 122, h: 144 },
+  { lat: -15, count: 9, w: 122, h: 144 },
+  { lat: -50, count: 5, w: 105, h: 125 },
+  { lat: -80, count: 1, w: 85, h: 100 },
 ];
 
 export default function BirthdayPage() {
@@ -159,18 +166,7 @@ export default function BirthdayPage() {
       setTimeout(() => setS2Words(prev => ({ ...prev, happy: true })), 120);
       setTimeout(() => setS2Words(prev => ({ ...prev, bday: true })), 180);
       setTimeout(() => setHatVisible(true), 300);
-      
-      [0, 1, 2].forEach(i => {
-        setTimeout(() => {
-          setScrollItemsVisible(prev => {
-            const next = [...prev];
-            next[i] = true;
-            return next;
-          });
-        }, 540 + i * 320);
-      });
-
-      setTimeout(() => setBtnLetterVisible(true), 1620);
+      setTimeout(() => setBtnLetterVisible(true), 500);
     }
   }, [scene, s2Ready]);
 
@@ -274,11 +270,6 @@ export default function BirthdayPage() {
           </div>
           <div className="date-pill">29-02</div>
           <div className="rabbit">🐰</div>
-          <div className="scroll-col" id="scroll-col">
-            {['🎂 Matsumoto Reiyo', '🌸 Chúc em tuổi mới', '☀️ Luôn hạnh phúc'].map((t, i) => (
-              <div key={i} className={`si ${scrollItemsVisible[i] ? 'show' : ''}`}>{t}</div>
-            ))}
-          </div>
           <button 
             className="btn-letter" 
             style={{ display: btnLetterVisible ? 'block' : 'none' }}
@@ -358,11 +349,10 @@ export default function BirthdayPage() {
       {/* MODE C: Grid */}
       <div id="mode-grid" className={viewMode === 'grid' ? 'active' : ''}>
         {viewMode === 'grid' && imgSrcs.map((src, i) => (
-          <img 
+          <div 
             key={i} 
-            src={src} 
-            alt="" 
-            style={{ animationDelay: `${i * 45}ms` }}
+            className="grid-img"
+            style={{ animationDelay: `${i * 45}ms`, backgroundImage: `url(${src})` }}
             onClick={() => setModalSrc(src)}
           />
         ))}
@@ -457,7 +447,7 @@ function FloatCard({ card, onImgClick }: { card: any, onImgClick: (s:string)=>vo
 
   return (
     <div className="fcard" style={style as React.CSSProperties} onClick={() => onImgClick(card.src)}>
-      <img src={card.src} alt="" />
+      <div className="fcard-img" style={{ backgroundImage: `url(${card.src})` }} />
     </div>
   );
 }
@@ -467,7 +457,6 @@ function FloatCard({ card, onImgClick }: { card: any, onImgClick: (s:string)=>vo
 // Sphere Mode Component (Quaternion rotation)
 // ==========================================
 function SphereMode({ active, onImgClick }: { active: boolean, onImgClick: (s:string)=>void }) {
-  const [q, setQ] = useState({ x: 0, y: 0, z: 0, w: 1 });
   const qRef = useRef({ x: 0, y: 0, z: 0, w: 1 });
   const vel = useRef({ x: 0.009, y: 0 });
   const sR = useRef(260);
@@ -475,13 +464,27 @@ function SphereMode({ active, onImgClick }: { active: boolean, onImgClick: (s:st
   const isDrag = useRef(false);
   const lastPos = useRef({ x: 0, y: 0 });
   const inRaf = useRef<number | null>(null);
+  const sphereRef = useRef<HTMLDivElement>(null);
+
+  const applyTransform = () => {
+    if (!sphereRef.current) return;
+    const { x, y, z, w } = qRef.current;
+    const mat = [
+      1-2*(y*y+z*z), 2*(x*y-z*w), 2*(x*z+y*w), 0,
+      2*(x*y+z*w), 1-2*(x*x+z*z), 2*(y*z-x*w), 0,
+      2*(x*z-y*w), 2*(y*z+x*w), 1-2*(x*x+y*y), 0,
+      0, 0, 0, 1
+    ];
+    sphereRef.current.style.transform = `translate(-50%, -50%) matrix3d(${mat.join(',')})`;
+    sphereRef.current.style.setProperty('--sr', `${sR.current}px`);
+  };
 
   const initQ = () => {
     const ang = -0.18;
     const ax = 1, ay = 0, az = 0;
     const s = Math.sin(ang / 2);
     qRef.current = { x: ax * s, y: ay * s, z: az * s, w: Math.cos(ang / 2) };
-    setQ({ ...qRef.current });
+    applyTransform();
   };
 
   useEffect(() => {
@@ -489,27 +492,31 @@ function SphereMode({ active, onImgClick }: { active: boolean, onImgClick: (s:st
       if (qRef.current.w === 1 && qRef.current.x === 0 && qRef.current.y === 0 && qRef.current.z === 0) {
         initQ();
       }
+      applyTransform();
       const inertia = () => {
         if (isDrag.current) return;
         const spd = Math.sqrt(vel.current.x ** 2 + vel.current.y ** 2);
-        if (spd < 0.00002) return;
+        if (spd < 0.00002) {
+          inRaf.current = requestAnimationFrame(inertia);
+          return;
+        }
         const ax = -vel.current.y / spd, ay = vel.current.x / spd;
         
         const sang = Math.sin(spd / 2);
         const qm = { x: ax * sang, y: ay * sang, z: 0, w: Math.cos(spd / 2) };
         const a = qm, b = qRef.current;
-        const newQ = {
+        qRef.current = {
           x: a.w*b.x + a.x*b.w + a.y*b.z - a.z*b.y,
           y: a.w*b.y - a.x*b.z + a.y*b.w + a.z*b.x,
           z: a.w*b.z + a.x*b.y - a.y*b.x + a.z*b.w,
           w: a.w*b.w - a.x*b.x - a.y*b.y - a.z*b.z
         };
-        qRef.current = newQ;
-        setQ(newQ);
+        applyTransform();
         vel.current.x *= 0.95;
         vel.current.y *= 0.95;
         inRaf.current = requestAnimationFrame(inertia);
       };
+      // start inertia loop right away
       inRaf.current = requestAnimationFrame(inertia);
     } else {
       if (inRaf.current) cancelAnimationFrame(inRaf.current);
@@ -518,11 +525,10 @@ function SphereMode({ active, onImgClick }: { active: boolean, onImgClick: (s:st
   }, [active]);
 
   const onPointerDown = (e: React.PointerEvent) => {
-    if ((e.target as HTMLElement).tagName === 'IMG') return;
+    if ((e.target as HTMLElement).tagName.toLowerCase() === 'div' && (e.target as HTMLElement).className.includes('sphere-img')) return;
     isDrag.current = true;
     lastPos.current = { x: e.clientX, y: e.clientY };
     vel.current = { x: 0, y: 0 };
-    if (inRaf.current) cancelAnimationFrame(inRaf.current);
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
@@ -545,7 +551,7 @@ function SphereMode({ active, onImgClick }: { active: boolean, onImgClick: (s:st
       z: a.w*b.z + a.x*b.y - a.y*b.x + a.z*b.w,
       w: a.w*b.w - a.x*b.x - a.y*b.y - a.z*b.z
     };
-    setQ({ ...qRef.current });
+    applyTransform();
     vel.current = { x: dx * 0.007, y: dy * 0.007 };
   };
 
@@ -555,14 +561,9 @@ function SphereMode({ active, onImgClick }: { active: boolean, onImgClick: (s:st
 
   const onWheel = (e: React.WheelEvent) => {
     sR.current = Math.min(RMAX, Math.max(RMIN, sR.current + e.deltaY * 0.35));
-    // Hack wrapper size to force re-render if needed
-    setQ(prev => ({...prev}));
+    applyTransform();
   };
 
-  // Build matrix
-  const { x, y, z, w } = q;
-  const mat = [1-2*(y*y+z*z), 2*(x*y-z*w), 2*(x*z+y*w), 0,  2*(x*y+z*w), 1-2*(x*x+z*z), 2*(y*z-x*w), 0,  2*(x*z-y*w), 2*(y*z+x*w), 1-2*(x*x+y*y), 0,  0, 0, 0, 1];
-  
   // Create static scene layout
   const nodes = useMemo(() => {
     let idx = 0;
@@ -582,26 +583,25 @@ function SphereMode({ active, onImgClick }: { active: boolean, onImgClick: (s:st
   return (
     <div 
       id="mode-sphere" 
-      className={`${active ? 'active' : ''} ${isDrag.current ? 'dragging' : ''}`}
+      className={active ? 'active' : ''}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerLeave={onPointerUp}
       onWheel={onWheel}
     >
-      <div id="sphere-scene" style={{ transform: `translate(-50%, -50%) matrix3d(${mat.join(',')})` }}>
+      <div id="sphere-scene" ref={sphereRef} style={{ '--sr': `${sR.current}px` } as React.CSSProperties}>
         {nodes.map(n => (
-          <img 
+          <div 
             key={n.idx} 
-            src={imgSrcs[n.idx % imgSrcs.length]} 
-            draggable={false}
+            className="sphere-img"
             onClick={() => onImgClick(imgSrcs[n.idx % imgSrcs.length])}
             style={{
-              transform: `rotateY(${n.lonDeg}deg) rotateX(${-n.ring.lat}deg) translateZ(${sR.current}px)`,
+              transform: `rotateY(${n.lonDeg}deg) rotateX(${-n.ring.lat}deg) translateZ(var(--sr))`,
               width: `${n.ring.w}px`, height: `${n.ring.h}px`,
-              left: `-${n.ring.w / 2}px`, top: `-${n.ring.h / 2}px`
+              left: `-${n.ring.w / 2}px`, top: `-${n.ring.h / 2}px`,
+              backgroundImage: `url(${imgSrcs[n.idx % imgSrcs.length]})`
             }}
-            alt="" 
           />
         ))}
       </div>

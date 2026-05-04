@@ -62,7 +62,7 @@ canvas#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 .btn-start.show{display:block}
 
 /* ===== S4 hold ===== */
-#s4-hold{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;user-select:none;-webkit-user-select:none;z-index:2}
+#s4-hold{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;user-select:none;-webkit-user-select:none;z-index:2;touch-action:none}
 .prog-wrap{width:240px;height:12px;background:rgba(255,255,255,.12);border-radius:10px;overflow:hidden;margin-top:14px}
 .prog-fill{width:0%;height:100%;background:linear-gradient(90deg,#3b82f6,#a855f7);border-radius:10px}
 .blink{animation:blink 1.5s infinite;font-size:1.1rem;opacity:.8;margin-top:10px}
@@ -82,7 +82,7 @@ canvas#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   transition:transform .3s,box-shadow .3s;
 }
 .fcard:hover{box-shadow:0 12px 40px rgba(0,220,255,.4);border-color:#0ff}
-.fcard img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.fcard-img{width:100%;height:100%;background-size:cover;background-position:center;background-repeat:no-repeat;pointer-events:none}
 /* Globe button in center */
 #globe-btn{
   position:fixed;
@@ -108,24 +108,26 @@ canvas#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 .vbtn.active,.vbtn:hover{background:rgba(59,130,246,.65);border-color:rgba(59,130,246,.8)}
 
 /* ===== MODE B: 3D Sphere ===== */
-#mode-sphere{position:fixed;inset:0;display:none;z-index:15;perspective:900px;overflow:hidden;cursor:grab}
+#mode-sphere{position:fixed;inset:0;display:none;z-index:15;perspective:900px;cursor:grab;touch-action:none}
 #mode-sphere.active{display:block}
 #mode-sphere.dragging{cursor:grabbing}
-#sphere-scene{position:absolute;left:50%;top:50%;transform-style:preserve-3d}
-#sphere-scene img{
-  position:absolute;object-fit:cover;border-radius:7px;
+#sphere-scene{position:absolute;left:50%;top:50%;transform-style:preserve-3d;-webkit-transform-style:preserve-3d}
+#sphere-scene .sphere-img{
+  position:absolute;border-radius:7px;
   border:2px solid rgba(255,255,255,.88);
   cursor:pointer;backface-visibility:hidden;
   box-shadow:0 4px 16px rgba(0,0,0,.5);
   transition:border-color .2s,box-shadow .2s;
+  background-color: rgba(255, 255, 255, 0.1);
+  background-size: cover; background-position: center; background-repeat: no-repeat;
 }
-#sphere-scene img:hover{border-color:#0ff;box-shadow:0 0 20px #0ff}
+#sphere-scene .sphere-img:hover{border-color:#0ff;box-shadow:0 0 20px #0ff}
 .drag-hint{position:fixed;bottom:68px;left:50%;transform:translateX(-50%);font-size:.8rem;opacity:.5;pointer-events:none;z-index:20;transition:opacity 1.2s;letter-spacing:.5px}
 
 /* ===== MODE C: Grid ===== */
 #mode-grid{position:fixed;inset:0;display:none;z-index:15;overflow-y:auto;padding:64px 16px 80px;background:rgba(8,8,32,.0)}
 #mode-grid.active{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-content:flex-start}
-#mode-grid img{width:100px;height:130px;object-fit:cover;border-radius:9px;border:2px solid rgba(255,255,255,.6);cursor:pointer;animation:riseUp .5s ease both;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+#mode-grid .grid-img{width:100px;height:130px;background-size:cover;background-position:center;background-repeat:no-repeat;border-radius:9px;border:2px solid rgba(255,255,255,.6);cursor:pointer;animation:riseUp .5s ease both;box-shadow:0 4px 16px rgba(0,0,0,.4)}
 @keyframes riseUp{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
 
 /* ===== Modal ===== */
