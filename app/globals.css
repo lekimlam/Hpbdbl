@@ -7,10 +7,38 @@ canvas#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 .scene{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .6s;z-index:10}
 .scene.active{opacity:1;pointer-events:all}
 
+/* ===== S0 Countdown & Password ===== */
+.countdown-container { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 30px; animation: s1Enter 1s ease forwards; }
+.cd-title { font-family: 'Fredoka One', cursive; font-size: 2rem; text-shadow: 0 0 15px rgba(255,105,180,0.6); color: #ffa3d7; }
+.cd-boxes { display: flex; gap: 15px; }
+.cd-box { background: rgba(255, 105, 180, 0.2); border: 2px solid rgba(255, 105, 180, 0.4); padding: 15px; border-radius: 12px; width: 80px; backdrop-filter: blur(5px); box-shadow: 0 0 15px rgba(255, 105, 180, 0.2); }
+.cd-num { font-size: 2.2rem; font-weight: 800; font-family: 'Fredoka One', cursive; color: #fff; line-height: 1; }
+.cd-label { font-size: 0.9rem; margin-top: 5px; color: #ffb8e0; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+.password-container { text-align: center; animation: s1Enter 0.8s ease forwards; background: rgba(255, 255, 255, 0.05); padding: 40px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
+.pass-title { font-family: 'Fredoka One', cursive; font-size: 2.2rem; color: #fff; text-shadow: 0 0 15px rgba(0, 220, 255, 0.6); margin-bottom: 10px; }
+.pass-subtitle { font-size: 1.1rem; color: #aaa; margin-bottom: 25px; }
+.pass-form { display: flex; flex-direction: column; gap: 15px; align-items: center; }
+.pass-input { background: rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.3); color: #fff; padding: 12px 20px; border-radius: 25px; font-size: 1.2rem; width: 250px; text-align: center; outline: none; transition: border-color 0.3s, box-shadow 0.3s; }
+.pass-input:focus { border-color: #00e5ff; box-shadow: 0 0 15px rgba(0, 229, 255, 0.4); }
+.pass-btn { background: linear-gradient(135deg, #00e5ff, #1a5fff); color: #fff; border: none; padding: 12px 30px; border-radius: 25px; font-weight: 800; font-size: 1.1rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; white-space: nowrap; }
+.pass-btn:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 5px 20px rgba(0, 229, 255, 0.5); }
+
+.floating-hearts { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: -1; }
+.fh { position: absolute; font-size: 2rem; opacity: 0; animation: floatUp 4s ease-in-out infinite; }
+.fh:nth-child(1) { left: 10%; animation-delay: 0s; font-size: 2.5rem; }
+.fh:nth-child(2) { left: 80%; animation-delay: 1.5s; font-size: 1.5rem; }
+.fh:nth-child(3) { left: 50%; animation-delay: 3s; font-size: 3rem; }
+@keyframes floatUp { 0% { transform: translateY(100px) scale(0.8); opacity: 0; } 20% { opacity: 0.6; } 80% { opacity: 0.6; } 100% { transform: translateY(-100vh) scale(1.2) rotate(20deg); opacity: 0; } }
+
+.shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+@keyframes shake { 10%, 90% { transform: translate3d(-2px, 0, 0); } 20%, 80% { transform: translate3d(4px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-6px, 0, 0); } 40%, 60% { transform: translate3d(6px, 0, 0); } }
+
 /* ===== S1 ===== */
-#s1 .gift{font-size:5rem;cursor:pointer;animation:pulse 2s infinite;filter:drop-shadow(0 0 20px #ec4899);display:block;text-align:center}
-#s1 p{margin-top:16px;font-size:1.2rem;letter-spacing:3px;opacity:.8;text-align:center}
+#s1 .gift{font-size:5rem;cursor:pointer;animation:pulse 2s infinite, s1Enter 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;filter:drop-shadow(0 0 20px #ec4899);display:block;text-align:center}
+#s1 p{margin-top:24px;font-size:1.4rem;letter-spacing:4px;color:#fff;text-align:center;animation:s1Enter 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s forwards;opacity:0;text-shadow:0 0 10px rgba(255,255,255,0.5)}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+@keyframes s1Enter{0%{transform:translateY(30px);opacity:0}100%{transform:translateY(0);opacity:1}}
 
 /* ===== S2 ===== */
 #s2{flex-direction:row;align-items:center;justify-content:center;padding:20px;gap:0}
@@ -141,15 +169,3 @@ canvas#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 .emoji-row button:hover{transform:scale(1.35)}
 .float-emoji{position:fixed;pointer-events:none;z-index:2000;animation:floatUp 1.4s ease-out forwards;font-size:22px}
 @keyframes floatUp{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-130px) scale(1.5);opacity:0}}
-
-/* ===== Mobile Responsive ===== */
-@media (max-width: 768px) {
-  #s2 { flex-direction: column-reverse; padding: 10px;text-align: center; }
-  .s2-left { padding-left: 0; align-items: center; margin-top: 10px; }
-  .s2-right { padding-top: 10px; padding-bottom: 20px;}
-  .hb-line { font-size: 3.5rem; }
-  .photo-circle { width: 160px; height: 160px; }
-  .hat { top: -45px; font-size: 2.4rem; }
-  .balloons { top: 0px; position: relative; justify-content: center;}
-  #s1 .gift { font-size: 4rem; }
-}

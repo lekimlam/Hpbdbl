@@ -22,8 +22,52 @@ const RINGS = [
 ];
 
 export default function BirthdayPage() {
-  const [scene, setScene] = useState<number>(1);
+  const [scene, setScene] = useState<number>(0);
   const cvsRef = useRef<HTMLCanvasElement>(null);
+
+  // --- S0 State (Countdown + Password) ---
+  const [timeLeft, setTimeLeft] = useState({ d: 0, h: 0, m: 0, s: 0, total: 1 });
+  const [isTimeUp, setIsTimeUp] = useState(true); // Tạm thời để true để bỏ qua đếm ngược
+  const [passInput, setPassInput] = useState('');
+  const [passShake, setPassShake] = useState(false);
+
+  useEffect(() => {
+    // Ngày đích: 5/5/2026 00:00:00
+    const targetDate = new Date(2026, 4, 5, 0, 0, 0).getTime();
+    
+    // Tạm thời comment timer để test phần sau
+    /*
+    const timer = setInterval(() => {
+      const now = new Date().getTime();
+      const diff = targetDate - now;
+
+      if (diff <= 0) {
+        setIsTimeUp(true);
+        clearInterval(timer);
+      } else {
+        setTimeLeft({
+          d: Math.floor(diff / (1000 * 60 * 60 * 24)),
+          h: Math.floor((diff / (1000 * 60 * 60)) % 24),
+          m: Math.floor((diff / 1000 / 60) % 60),
+          s: Math.floor((diff / 1000) % 60),
+          total: diff
+        });
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+    */
+  }, []);
+
+  const handlePassSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passInput === '05052011') {
+      setScene(1);
+    } else {
+      setPassShake(true);
+      setTimeout(() => setPassShake(false), 500);
+    }
+  };
 
   // --- S2 State ---
   const [s2Ready, setS2Ready] = useState(false);
@@ -154,10 +198,7 @@ export default function BirthdayPage() {
   }, []);
 
   // --- S1 Actions ---
-  const handleGiftClick = () => {
-    // We would fire some shooting stars here if we wanted, but we'll just transition to scene 2
-    setScene(2);
-  };
+  // (Gift click is handled inline)
 
   // --- S2 Actions ---
   useEffect(() => {
@@ -236,14 +277,17 @@ export default function BirthdayPage() {
   };
 
   const fireEmoji = (e: React.MouseEvent, ch: string) => {
-    const btn = e.currentTarget as HTMLButtonElement;
+    const btn = e.currentTarget as HTMLElement;
     const rect = btn.getBoundingClientRect();
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 12; i++) {
       const p = document.createElement('div');
       p.className = 'float-emoji';
       p.textContent = ch;
-      p.style.left = (rect.left + rect.width / 2 + (Math.random() - 0.5) * 60) + 'px';
-      p.style.top = rect.top + 'px';
+      // random spread in 2D
+      const angle = Math.random() * Math.PI * 2;
+      const dist = Math.random() * 100;
+      p.style.left = (rect.left + rect.width / 2 + Math.cos(angle) * dist) + 'px';
+      p.style.top = (rect.top + rect.height / 2 + Math.sin(angle) * dist) + 'px';
       document.body.appendChild(p);
       setTimeout(() => p.remove(), 1400);
     }
@@ -253,9 +297,59 @@ export default function BirthdayPage() {
     <>
       <canvas ref={cvsRef} id="bg" />
 
+      {/* S0: Countdown & Password */}
+      <div id="s0" className={`scene ${scene === 0 ? 'active' : ''}`}>
+        {!isTimeUp ? (
+          <div className="countdown-container">
+            <h2 className="cd-title">Sắp đến ngày rồi nè... ⏳💖</h2>
+            <div className="cd-boxes">
+              <div className="cd-box"><div className="cd-num">{timeLeft.d}</div><div className="cd-label">Ngày</div></div>
+              <div className="cd-box"><div className="cd-num">{timeLeft.h}</div><div className="cd-label">Giờ</div></div>
+              <div className="cd-box"><div className="cd-num">{timeLeft.m}</div><div className="cd-label">Phút</div></div>
+              <div className="cd-box"><div className="cd-num">{timeLeft.s}</div><div className="cd-label">Giây</div></div>
+            </div>
+            <div className="floating-hearts">
+              <span className="fh">💖</span>
+              <span className="fh">✨</span>
+              <span className="fh">🌸</span>
+            </div>
+          </div>
+        ) : (
+          <div className={`password-container ${passShake ? 'shake' : ''}`}>
+            <h2 className="pass-title">Ting ting! Tới ngày mở quà rùiii 🎁</h2>
+            <p className="pass-subtitle">Nhập mật khẩu bí mật nè nha 👇</p>
+            <form onSubmit={handlePassSubmit} className="pass-form">
+              <input 
+                type="password" 
+                className="pass-input"
+                placeholder="Mật khẩu là gì ta?" 
+                value={passInput}
+                onChange={(e) => setPassInput(e.target.value)}
+              />
+              <button type="submit" className="pass-btn">Mở khoá 🗝️</button>
+            </form>
+          </div>
+        )}
+      </div>
+
       {/* S1 */}
       <div id="s1" className={`scene ${scene === 1 ? 'active' : ''}`}>
-        <span className="gift" id="gift-btn" onClick={handleGiftClick}>🎁</span>
+        <span 
+          className="gift" 
+          id="gift-btn" 
+          onClick={(e) => {
+            const target = e.currentTarget;
+            fireEmoji(e, '✨');
+            fireEmoji(e, '🎉');
+            fireEmoji(e, '💖');
+            target.style.transform = 'scale(1.5)';
+            target.style.opacity = '0';
+            target.style.transition = 'all 0.6s ease';
+            setTimeout(() => setScene(2), 600);
+          }}
+        >
+          🎁
+        </span>
         <p>Đây là món quà tặng em</p>
       </div>
 
@@ -268,7 +362,7 @@ export default function BirthdayPage() {
           <div className="hb-line" id="hb-bday">
             {"Birthday".split('').map((c, i) => <span key={i} className={s2Words.bday ? 'show' : ''}>{c}</span>)}
           </div>
-          <div className="date-pill">05-05</div>
+          <div className="date-pill">29-02</div>
           <div className="rabbit">🐰</div>
           <button 
             className="btn-letter" 
@@ -285,10 +379,10 @@ export default function BirthdayPage() {
           <div style={{ position: 'relative' }}>
             <div className={`hat ${hatVisible ? 'show' : ''}`} id="hat">🎩</div>
             <div className="photo-circle">
-              <img src="/anh10.jpg" alt="" />
+              <img src="/anh1.jpg" alt="" />
             </div>
           </div>
-          <div className="name-tag">Bảo Lan</div>
+          <div className="name-tag">Matsumoto Reiyo</div>
         </div>
       </div>
 
